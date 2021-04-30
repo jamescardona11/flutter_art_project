@@ -1,18 +1,30 @@
+import 'dart:math';
+
+import 'package:art_project/views/particles/particle.dart';
 import 'package:flutter/material.dart';
 
 class MyPainterClass extends CustomPainter {
+  MyPainterClass(this.particles, this.animValue, this.rgn);
+
+  final List<Particle> particles;
+  final Random rgn;
+  final double animValue;
+
   @override
   void paint(Canvas canvas, Size size) {
-    final dx = size.width / 2;
-    final dy = size.height / 2;
-    final c = Offset(dx, dy);
+    particles.forEach((p) {
+      p.validateAndUpdate(rgn, size);
+    });
 
-    final radius = 100.0;
-    final paint = Paint()..color = Colors.deepPurple;
-
-    canvas.drawCircle(c, radius, paint);
+    particles.forEach((p) {
+      final paint = Paint()..color = p.color;
+      canvas.drawCircle(p.position, p.radius, paint);
+    });
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
+
+Offset polarToCartesian(double speed, double theta) =>
+    Offset(speed * cos(theta), speed * sin(theta));
