@@ -1,6 +1,7 @@
 import 'package:art_project/views/cloud_particles_view.dart';
 import 'package:flutter/material.dart';
 
+import 'views/floating_particles_view.dart';
 import 'views/moving_particles_view.dart';
 
 void main() => runApp(MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
         // appBar: AppBar(
         //   title: Text('Material App Bar'),
         // ),
-        body: CloudParticlesView(),
+        body: MovingParticleView(),
       ),
     );
   }

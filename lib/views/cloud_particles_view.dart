@@ -68,7 +68,7 @@ class CloudParticlesViewState extends State<CloudParticlesView>
     final center = Offset(size.width / 2, size.height / 2);
 
     //* Number of blobs
-    final nb = 5;
+    final nb = 2;
 
     final radius = size.width / nb;
     final alpha = 0.2;
@@ -101,11 +101,18 @@ class CloudParticlesViewState extends State<CloudParticlesView>
 
   double t = 0.0;
   final dt = 0.01;
-  final radiusFactor = 5;
+  double radiusFactor = 5;
   void updateBlobField() {
     t += dt;
+    radiusFactor = mapRange(sin(t), -1, 1, 2, 10);
     particles.forEach((p) {
       p.position = polarToCartesian(p.radius * radiusFactor, p.theta + t) + p.origin;
     });
+  }
+
+  double mapRange(double value, double min1, double max1, double min2, double max2) {
+    final range1 = min1 - max1;
+    final range2 = min2 - max2;
+    return min2 + range2 * value / range1;
   }
 }
