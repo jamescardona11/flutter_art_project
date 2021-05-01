@@ -1,4 +1,4 @@
-# art_project
+# flutter_art_project
 
 A new Flutter project.
 

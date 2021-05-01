@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:art_project/model/particle.dart';
+import 'package:flutter_art_project/model/particle.dart';
 import 'package:flutter/material.dart';
 
 class ConePainter extends CustomPainter {

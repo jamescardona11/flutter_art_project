@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:art_project/utils.dart';
-import 'package:art_project/views/painter/cone_painter.dart';
-import 'package:art_project/views/painter/moving_painter.dart';
+import 'package:flutter_art_project/utils.dart';
+import 'package:flutter_art_project/views/painter/cone_painter.dart';
+import 'package:flutter_art_project/views/painter/moving_painter.dart';
 import 'package:fast_noise/fast_noise.dart';
 import 'package:flutter/material.dart';
 

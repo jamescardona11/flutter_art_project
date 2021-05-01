@@ -1,4 +1,4 @@
-import 'package:art_project/utils.dart';
+import 'package:flutter_art_project/utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
