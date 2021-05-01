@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:art_project/utils.dart';
+import 'package:art_project/views/painter/moving_painter.dart';
 import 'package:flutter/material.dart';
 
 import 'painter/my_painter.dart';
@@ -52,7 +53,7 @@ class MovingParticleViewState extends State<MovingParticleView>
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: MyPainterClass(particles, animation.value, rgn),
+      painter: MovingPainterClass(particles, animation.value, rgn),
       child: Container(),
     );
   }
@@ -94,15 +95,9 @@ class MovingParticleViewState extends State<MovingParticleView>
     });
 
     particles.add(newParticle(origin));
-    while (particles.length < particlesCount * 2) {
-      particles.remove(0);
+    while (particles.length > particlesCount * 2) {
+      particles.removeAt(0);
     }
-  }
-
-  double mapRange(double value, double min1, double max1, double min2, double max2) {
-    final range1 = min1 - max1;
-    final range2 = min2 - max2;
-    return min2 + range2 * value / range1;
   }
 
   Particle newParticle(Offset origin) => Particle(

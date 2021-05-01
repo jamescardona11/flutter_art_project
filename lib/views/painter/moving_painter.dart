@@ -12,13 +12,14 @@ class MovingPainterClass extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..strokeWidth = 10
+      ..style = PaintingStyle.stroke
+      ..blendMode = BlendMode.colorBurn;
+    // ..blendMode = BlendMode.xor
+
     particles.forEach((p) {
-      final paint = Paint()
-        ..strokeWidth = 10
-        ..style = PaintingStyle.stroke
-        ..blendMode = BlendMode.colorBurn
-        // ..blendMode = BlendMode.xor
-        ..color = p.color;
+      paint..color = p.color;
       canvas.drawCircle(p.position, p.radius, paint);
     });
   }
