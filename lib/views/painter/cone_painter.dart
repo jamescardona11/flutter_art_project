@@ -18,16 +18,25 @@ class ConePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // particles.forEach((p) {
-    //   p.validateAndUpdate(rgn, size);
-    // });
+    final dx1 = canvasSize.width / 2 - w / 2;
+    final dy1 = canvasSize.height / 2 - w / 2;
+
+    final dx2 = canvasSize.width / 2 + w / 2;
+    final dy2 = canvasSize.height / 2 - w / 2;
 
     particles.forEach((p) {
       final paint = Paint()
-        // ..style = PaintingStyle.stroke //remove thsi for floating example
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 5 //remove thsi for floating example
+        ..blendMode = BlendMode.xor
         ..color = p.color;
 
       canvas.drawCircle(p.position + offset, p.radius, paint);
+
+      final p1 = p.origin + Offset(dx1, dy1);
+      final p2 = p.origin + Offset(dx2, dy2);
+      canvas.drawLine(p1, p.position + offset, paint);
+      canvas.drawLine(p2, p.position + offset, paint);
     });
   }
 

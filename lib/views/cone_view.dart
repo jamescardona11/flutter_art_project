@@ -71,7 +71,7 @@ class ConeParticleViewState extends State<ConeParticleView>
   }
 
   final w = 600;
-  double step = 10;
+  double step = 5;
   void blobField() {
     for (var y = 0; y < w / step; y++) {
       final x = 0.0;
@@ -105,8 +105,9 @@ class ConeParticleViewState extends State<ConeParticleView>
     final zz = t * 0.5;
     final perlin = perlinNoise.singlePerlin3(1942, xx, yy, zz);
     final dx = mapRange(perlin, 0, 1, -step.toDouble(), step.toDouble());
+    final dy = mapRange(perlin, 0, 1, -step.toDouble(), step.toDouble());
     final px = x + dx;
-    final py = y;
+    final py = y + dy;
 
     p.position = Offset(px, py);
   }
