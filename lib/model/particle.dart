@@ -1,8 +1,10 @@
+import 'package:art_project/utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
 class Particle {
   Offset position;
+  Offset origin;
   final Color color;
 
   final double speed;
@@ -12,10 +14,10 @@ class Particle {
   Particle({
     this.position = const Offset(-1, -1),
     this.color = Colors.deepPurple,
-    required this.speed,
-    required this.radius,
-    required this.theta,
-  });
+    this.radius = 0,
+    this.speed = 0,
+    this.theta = 0,
+  }) : origin = position;
 
   void validateAndUpdate(Random rgn, Size size) {
     final velocity = polarToCartesian(speed, theta);
@@ -32,9 +34,6 @@ class Particle {
 
     position = Offset(dx, dy);
   }
-
-  Offset polarToCartesian(double speed, double theta) =>
-      Offset(speed * cos(theta), speed * sin(theta));
 
   @override
   String toString() {

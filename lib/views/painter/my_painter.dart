@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:art_project/views/particles/particle.dart';
+import 'package:art_project/model/particle.dart';
 import 'package:flutter/material.dart';
 
 class MyPainterClass extends CustomPainter {
@@ -12,12 +12,14 @@ class MyPainterClass extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    particles.forEach((p) {
-      p.validateAndUpdate(rgn, size);
-    });
+    // particles.forEach((p) {
+    //   p.validateAndUpdate(rgn, size);
+    // });
 
     particles.forEach((p) {
-      final paint = Paint()..color = p.color;
+      final paint = Paint()
+        ..blendMode = BlendMode.modulate
+        ..color = p.color;
       canvas.drawCircle(p.position, p.radius, paint);
     });
   }
@@ -25,6 +27,3 @@ class MyPainterClass extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
-
-Offset polarToCartesian(double speed, double theta) =>
-    Offset(speed * cos(theta), speed * sin(theta));

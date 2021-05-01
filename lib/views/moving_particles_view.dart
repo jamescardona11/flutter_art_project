@@ -1,18 +1,20 @@
 import 'dart:math';
 
+import 'package:art_project/utils.dart';
 import 'package:flutter/material.dart';
 
-import 'my_painter.dart';
-import 'particle.dart';
+import 'painter/my_painter.dart';
+import '../model/particle.dart';
 
-class ParticleView extends StatefulWidget {
-  ParticleView({Key? key}) : super(key: key);
+class MovingParticleView extends StatefulWidget {
+  MovingParticleView({Key? key}) : super(key: key);
 
   @override
-  ParticleViewState createState() => ParticleViewState();
+  MovingParticleViewState createState() => MovingParticleViewState();
 }
 
-class ParticleViewState extends State<ParticleView> with SingleTickerProviderStateMixin {
+class MovingParticleViewState extends State<MovingParticleView>
+    with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
   late Random rgn;
@@ -27,7 +29,7 @@ class ParticleViewState extends State<ParticleView> with SingleTickerProviderSta
   void initState() {
     super.initState();
 
-    controller = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    controller = AnimationController(vsync: this, duration: const Duration(seconds: 10));
     animation = Tween<double>(begin: 0, end: 300).animate(controller)
       ..addListener(() {
         setState(() {});
@@ -57,15 +59,6 @@ class ParticleViewState extends State<ParticleView> with SingleTickerProviderSta
   void dispose() {
     controller.dispose();
     super.dispose();
-  }
-
-  Color getRandomColor(Random rng) {
-    final a = rng.nextInt(255);
-    final r = rng.nextInt(255);
-    final g = rng.nextInt(255);
-    final b = rng.nextInt(255);
-
-    return Color.fromARGB(a, r, g, b);
   }
 
   void initParticles() {
