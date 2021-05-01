@@ -3,12 +3,18 @@ import 'dart:math';
 import 'package:art_project/model/particle.dart';
 import 'package:flutter/material.dart';
 
-class MyPainterClass extends CustomPainter {
-  MyPainterClass(this.particles, this.animValue, this.rgn);
+class ConePainter extends CustomPainter {
+  ConePainter(this.particles, this.animValue, this.rgn, this.canvasSize) {
+    offset = Offset(canvasSize.width / 2, canvasSize.height / 2 - w / 2);
+  }
 
   final List<Particle> particles;
   final Random rgn;
   final double animValue;
+  final Size canvasSize;
+  late Offset offset;
+
+  final w = 600;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -18,9 +24,10 @@ class MyPainterClass extends CustomPainter {
 
     particles.forEach((p) {
       final paint = Paint()
-        ..blendMode = BlendMode.modulate //remove thsi for floating example
+        // ..style = PaintingStyle.stroke //remove thsi for floating example
         ..color = p.color;
-      canvas.drawCircle(p.position, p.radius, paint);
+
+      canvas.drawCircle(p.position + offset, p.radius, paint);
     });
   }
 
