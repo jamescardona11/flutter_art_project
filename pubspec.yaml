@@ -12,10 +12,12 @@ dependencies:
     sdk: flutter
   fast_noise:
     git: https://github.com/jamescardona11/fast_noise
+  salomon_bottom_bar: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
 
 
 flutter:

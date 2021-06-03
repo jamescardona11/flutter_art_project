@@ -31,8 +31,8 @@ class ListContentPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       children: [
         const CardItemWidget(
-          name: 'Particles',
-          description: 'Moving particles in the canvas',
+          name: 'Particles Section',
+          description: 'Drawing particles and play with them',
           route: ParticlesPage(),
         )
       ],

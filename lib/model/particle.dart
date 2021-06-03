@@ -1,6 +1,6 @@
+import 'package:flutter_art_project/model/rgn_model.dart';
 import 'package:flutter_art_project/utils.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 class Particle {
   Offset position;
@@ -19,17 +19,17 @@ class Particle {
     this.theta = 0,
   }) : origin = position;
 
-  void validateAndUpdate(Random rgn, Size size) {
+  void validateAndUpdate(RgnModel rgn, Size size) {
     final velocity = polarToCartesian(speed, theta);
     double dx = position.dx + velocity.dx;
     double dy = position.dy + velocity.dy;
 
     if (position.dx < 0 || position.dx > size.width) {
-      dx = rgn.nextDouble() * size.width;
+      dx = rgn.getDouble(size.width);
     }
 
     if (position.dy < 0 || position.dy > size.height) {
-      dy = rgn.nextDouble() * size.height;
+      dy = rgn.getDouble(size.height);
     }
 
     position = Offset(dx, dy);
