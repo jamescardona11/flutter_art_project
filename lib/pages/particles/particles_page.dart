@@ -18,8 +18,8 @@ class _ParticlesPageState extends State<ParticlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        physics: const NeverScrollableScrollPhysics(),
+      body: IndexedStack(
+        index: _currentIndex,
         children: const [
           MovingParticlesView(),
           CloudParticlesView(),

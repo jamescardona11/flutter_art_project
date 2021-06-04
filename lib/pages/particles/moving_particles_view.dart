@@ -17,7 +17,7 @@ class _MovingParticlesViewState extends State<MovingParticlesView>
     with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
-  late RgnModel rgn;
+  final RgnModel rgn = RgnModel();
 
   List<Particle> particles = [];
   int total = 100;
@@ -44,14 +44,13 @@ class _MovingParticlesViewState extends State<MovingParticlesView>
       });
     controller.forward();
 
-    rgn = RgnModel();
     initParticles();
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: MyPainterClass(particles, animation.value, rgn),
+      painter: _MovingPainter(particles, animation.value, rgn),
       child: Container(),
     );
   }
@@ -75,8 +74,8 @@ class _MovingParticlesViewState extends State<MovingParticlesView>
   }
 }
 
-class MyPainterClass extends CustomPainter {
-  MyPainterClass(this.particles, this.animValue, this.rgn);
+class _MovingPainter extends CustomPainter {
+  _MovingPainter(this.particles, this.animValue, this.rgn);
 
   final List<Particle> particles;
   final RgnModel rgn;

@@ -17,9 +17,7 @@ class MyPainterClass extends CustomPainter {
     // });
 
     particles.forEach((p) {
-      final paint = Paint()
-        ..blendMode = BlendMode.modulate //remove thsi for floating example
-        ..color = p.color;
+      final paint = Paint()..color = p.color;
       canvas.drawCircle(p.position, p.radius, paint);
     });
   }
