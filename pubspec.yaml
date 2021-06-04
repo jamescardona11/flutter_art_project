@@ -10,8 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fast_noise:
-    git: https://github.com/jamescardona11/fast_noise
+  fast_noise: ^1.0.1
   salomon_bottom_bar: ^3.0.0
 
 dev_dependencies:

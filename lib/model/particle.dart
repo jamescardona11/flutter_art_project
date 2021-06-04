@@ -9,7 +9,8 @@ class Particle {
 
   final double speed;
   final double theta;
-  final double radius;
+  double alpha;
+  double radius;
 
   Particle({
     this.position = const Offset(-1, -1),
@@ -17,6 +18,7 @@ class Particle {
     this.radius = 0,
     this.speed = 0,
     this.theta = 0,
+    this.alpha = 0,
   }) : origin = position;
 
   void validateAndUpdate(RgnModel rgn, Size size) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'pages/effect/effect_page.dart';
 import 'pages/particles/particles_page.dart';
 
 void main() => runApp(MyApp());
@@ -34,7 +35,12 @@ class ListContentPage extends StatelessWidget {
           name: 'Particles Section',
           description: 'Drawing particles and play with them',
           route: ParticlesPage(),
-        )
+        ),
+        const CardItemWidget(
+          name: 'Effects Section',
+          description: 'Create amazing effects',
+          route: EffectPage(),
+        ),
       ],
     );
   }
