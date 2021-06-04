@@ -1,12 +1,10 @@
 import 'dart:math';
 
-import 'package:flutter_art_project/utils.dart';
 import 'package:flutter_art_project/pages/painter/cone_painter.dart';
-import 'package:flutter_art_project/pages/painter/moving_painter.dart';
+
 import 'package:fast_noise/fast_noise.dart';
 import 'package:flutter/material.dart';
 
-import 'painter/my_painter.dart';
 import '../model/particle.dart';
 
 class ConeParticlePage extends StatefulWidget {
@@ -28,7 +26,8 @@ class ConeParticlePageState extends State<ConeParticlePage>
   void initState() {
     super.initState();
 
-    controller = AnimationController(vsync: this, duration: const Duration(seconds: 5));
+    controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 5));
     animation = Tween<double>(begin: 0, end: 300).animate(controller)
       ..addListener(() {
         if (particles.length == 0) {
@@ -55,7 +54,8 @@ class ConeParticlePageState extends State<ConeParticlePage>
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: ConePainter(particles, animation.value, rgn, MediaQuery.of(context).size),
+      painter: ConePainter(
+          particles, animation.value, rgn, MediaQuery.of(context).size),
       child: Container(),
     );
   }
@@ -112,7 +112,8 @@ class ConeParticlePageState extends State<ConeParticlePage>
     p.position = Offset(px, py);
   }
 
-  double mapRange(double value, double min1, double max1, double min2, double max2) {
+  double mapRange(
+      double value, double min1, double max1, double min2, double max2) {
     final range1 = min1 - max1;
     final range2 = min2 - max2;
     return min2 + range2 * value / range1;

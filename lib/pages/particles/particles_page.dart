@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'cloud_particles_view.dart';
 import 'moving_particles_view.dart';
+import 'sphere_particles_view.dart';
 
 class ParticlesPage extends StatefulWidget {
   const ParticlesPage({
@@ -23,6 +24,7 @@ class _ParticlesPageState extends State<ParticlesPage> {
         children: const [
           MovingParticlesView(),
           CloudParticlesView(),
+          SphereParticlesView(),
         ],
       ),
       bottomNavigationBar: SafeArea(

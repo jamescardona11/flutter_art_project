@@ -1,24 +1,24 @@
 import 'dart:math';
 
-import 'package:flutter_art_project/utils.dart';
-import 'package:flutter_art_project/pages/painter/moving_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_art_project/model/particle.dart';
+import 'package:flutter_art_project/model/rgn_model.dart';
+import 'package:flutter_art_project/utils.dart';
 
-import 'painter/my_painter.dart';
-import '../model/particle.dart';
-
-class SquareParticlePage extends StatefulWidget {
-  SquareParticlePage({Key? key}) : super(key: key);
+class SphereParticlesView extends StatefulWidget {
+  const SphereParticlesView({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  SquareParticlePageState createState() => SquareParticlePageState();
+  _SphereParticlesViewState createState() => _SphereParticlesViewState();
 }
 
-class SquareParticlePageState extends State<SquareParticlePage>
+class _SphereParticlesViewState extends State<SphereParticlesView>
     with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
-  late Random rgn;
+  final RgnModel rgn = RgnModel();
 
   List<Particle> particles = [];
 
@@ -26,7 +26,8 @@ class SquareParticlePageState extends State<SquareParticlePage>
   void initState() {
     super.initState();
 
-    controller = AnimationController(vsync: this, duration: const Duration(seconds: 5));
+    controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 5));
     animation = Tween<double>(begin: 0, end: 300).animate(controller)
       ..addListener(() {
         if (particles.length == 0) {
@@ -45,15 +46,12 @@ class SquareParticlePageState extends State<SquareParticlePage>
         }
       });
     controller.forward();
-
-    rgn = Random(DateTime.now().millisecondsSinceEpoch);
-    // initParticles();
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: MovingPainterClass(particles, animation.value, rgn),
+      painter: _SpherePainter(particles),
       child: Container(),
     );
   }
@@ -80,7 +78,6 @@ class SquareParticlePageState extends State<SquareParticlePage>
     blobField(origin, radius);
   }
 
-  var w = 600;
   void blobField(Offset origin, double radius) {
     while (particles.length < particlesCount) {
       particles.add(newParticle(origin));
@@ -105,12 +102,35 @@ class SquareParticlePageState extends State<SquareParticlePage>
         color: Colors.grey,
         radius: 100,
         position: origin + getRandomPosition(100),
-        theta: rgn.nextDouble() * 2 * pi,
+        theta: rgn.getDouble(2 * pi),
         speed: 1,
       );
 
   Offset getRandomPosition(double radius) {
-    final t = rgn.nextDouble() * 2 * pi;
+    final t = rgn.getDouble(2 * pi);
     return polarToCartesian(radius, t);
   }
+}
+
+class _SpherePainter extends CustomPainter {
+  _SpherePainter(this.particles);
+
+  final List<Particle> particles;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..strokeWidth = 10
+      ..style = PaintingStyle.stroke
+      ..blendMode = BlendMode.colorBurn;
+    // ..blendMode = BlendMode.xor
+
+    particles.forEach((p) {
+      paint..color = p.color;
+      canvas.drawCircle(p.position, p.radius, paint);
+    });
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
