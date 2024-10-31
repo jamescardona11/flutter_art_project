@@ -6,6 +6,7 @@ import 'pages/effect/plasma_effect_view.dart';
 import 'pages/particles/cloud_particles_view.dart';
 import 'pages/particles/moving_particles_view.dart';
 import 'pages/particles/sphere_particles_view.dart';
+import 'utils/settings_controller_widget.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({
@@ -28,6 +29,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   ];
 
   int _currentPage = 0;
+  bool _showControllerSettings = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,22 +39,33 @@ class _HomeWidgetState extends State<HomeWidget> {
         currentPage: _currentPage,
         pageController: _pageController,
         itemsLength: items.length,
+        onSettingsPressed: () {
+          setState(() {
+            _showControllerSettings = !_showControllerSettings;
+          });
+        },
       ),
       drawer: _Drawer(
         items: items,
         pageController: _pageController,
         currentPage: _currentPage,
       ),
-      body: SafeArea(
-        child: PageView.builder(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: items.length,
-          onPageChanged: _onPageChanged,
-          itemBuilder: (context, index) {
-            return _PageViewWidget(items: items, index: index);
-          },
-        ),
+      body: Stack(
+        children: [
+          _PageViewWidget(
+            items: items,
+            index: _currentPage,
+            pageController: _pageController,
+            onPageChanged: _onPageChanged,
+          ),
+          if (_showControllerSettings)
+            const Positioned(
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: SettingsControllerWidget(),
+            ),
+        ],
       ),
     );
   }
@@ -70,38 +83,55 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 }
 
-class _PageViewWidget extends StatelessWidget {
+class _PageViewWidget extends StatefulWidget {
   const _PageViewWidget({
     required this.items,
     required this.index,
+    required this.pageController,
+    required this.onPageChanged,
   });
 
   final List<(String, Widget)> items;
   final int index;
+  final PageController pageController;
+  final Function(int) onPageChanged;
+
+  @override
+  State<_PageViewWidget> createState() => _PageViewWidgetState();
+}
+
+class _PageViewWidgetState extends State<_PageViewWidget> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future.delayed(const Duration(milliseconds: 300)),
-      builder: (context, snapshot) {
-        final (_, child) = items[index];
+    return PageView.builder(
+        controller: widget.pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: widget.items.length,
+        onPageChanged: widget.onPageChanged,
+        itemBuilder: (context, index) {
+          return FutureBuilder(
+            future: Future.delayed(const Duration(milliseconds: 300)),
+            builder: (context, snapshot) {
+              final (_, child) = widget.items[index];
 
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-          child: snapshot.connectionState != ConnectionState.done
-              ? const Center(
-                  key: ValueKey('loader'),
-                  child: CircularProgressIndicator(),
-                )
-              : child,
-        );
-      },
-    );
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+                child: snapshot.connectionState != ConnectionState.done
+                    ? const Center(
+                        key: ValueKey('loader'),
+                        child: CircularProgressIndicator(),
+                      )
+                    : child,
+              );
+            },
+          );
+        });
   }
 }
 
@@ -111,12 +141,14 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.currentPage,
     required this.pageController,
     required this.itemsLength,
+    required this.onSettingsPressed,
   });
 
   final String title;
   final int currentPage;
   final int itemsLength;
   final PageController pageController;
+  final Function() onSettingsPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -124,12 +156,16 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(title),
       actions: [
         IconButton(
+          icon: const Icon(Icons.settings),
+          onPressed: onSettingsPressed,
+        ),
+        IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => _onArrowPressed(false),
+          onPressed: () => onArrowPressed(false),
         ),
         IconButton(
           icon: const Icon(Icons.arrow_forward),
-          onPressed: () => _onArrowPressed(true),
+          onPressed: () => onArrowPressed(true),
         ),
       ],
     );
@@ -139,7 +175,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   // Circular navigation
-  void _onArrowPressed(bool isNext) {
+  void onArrowPressed(bool isNext) {
     final targetPage = isNext ? (currentPage + 1) % itemsLength : (currentPage - 1 + itemsLength) % itemsLength;
     pageController.jumpToPage(targetPage);
   }
@@ -186,7 +222,7 @@ class _Drawer extends StatelessWidget {
                       color: Colors.blue,
                     )
                   : null,
-              onTap: () => _onListTilePressed(context, index),
+              onTap: () => onListTilePressed(context, index),
             );
           }),
         ],
@@ -194,7 +230,7 @@ class _Drawer extends StatelessWidget {
     );
   }
 
-  void _onListTilePressed(BuildContext context, int index) {
+  void onListTilePressed(BuildContext context, int index) {
     pageController.jumpToPage(index);
     Navigator.pop(context);
   }

@@ -1,6 +1,6 @@
-import 'package:flutter_art_project/model/rgn_model.dart';
-import 'package:flutter_art_project/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_art_project/model/rgn_model.dart';
+import 'package:flutter_art_project/utils/utils.dart';
 
 class Particle {
   Offset position;

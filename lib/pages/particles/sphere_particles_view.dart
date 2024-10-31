@@ -3,19 +3,18 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_art_project/model/particle.dart';
 import 'package:flutter_art_project/model/rgn_model.dart';
-import 'package:flutter_art_project/utils.dart';
+import 'package:flutter_art_project/utils/utils.dart';
 
 class SphereParticlesView extends StatefulWidget {
   const SphereParticlesView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _SphereParticlesViewState createState() => _SphereParticlesViewState();
 }
 
-class _SphereParticlesViewState extends State<SphereParticlesView>
-    with SingleTickerProviderStateMixin {
+class _SphereParticlesViewState extends State<SphereParticlesView> with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
   final RgnModel rgn = RgnModel();
@@ -26,11 +25,10 @@ class _SphereParticlesViewState extends State<SphereParticlesView>
   void initState() {
     super.initState();
 
-    controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 5));
+    controller = AnimationController(vsync: this, duration: const Duration(seconds: 5));
     animation = Tween<double>(begin: 0, end: 300).animate(controller)
       ..addListener(() {
-        if (particles.length == 0) {
+        if (particles.isEmpty) {
           createBlobField();
         } else {
           setState(() {
@@ -88,9 +86,9 @@ class _SphereParticlesViewState extends State<SphereParticlesView>
   final dr = 0.1;
 
   void updateBlobField() {
-    particles.forEach((p) {
+    for (var p in particles) {
       p.position += polarToCartesian(p.speed, p.theta);
-    });
+    }
 
     particles.add(newParticle(origin));
     while (particles.length > particlesCount * 2) {
@@ -125,10 +123,10 @@ class _SpherePainter extends CustomPainter {
       ..blendMode = BlendMode.colorBurn;
     // ..blendMode = BlendMode.xor
 
-    particles.forEach((p) {
-      paint..color = p.color;
+    for (var p in particles) {
+      paint.color = p.color;
       canvas.drawCircle(p.position, p.radius, paint);
-    });
+    }
   }
 
   @override

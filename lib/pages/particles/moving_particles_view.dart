@@ -6,15 +6,14 @@ import 'package:flutter_art_project/model/rgn_model.dart';
 
 class MovingParticlesView extends StatefulWidget {
   const MovingParticlesView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _MovingParticlesViewState createState() => _MovingParticlesViewState();
 }
 
-class _MovingParticlesViewState extends State<MovingParticlesView>
-    with SingleTickerProviderStateMixin {
+class _MovingParticlesViewState extends State<MovingParticlesView> with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
   final RgnModel rgn = RgnModel();
@@ -29,8 +28,7 @@ class _MovingParticlesViewState extends State<MovingParticlesView>
   void initState() {
     super.initState();
 
-    controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 10));
+    controller = AnimationController(vsync: this, duration: const Duration(seconds: 10));
     animation = Tween<double>(begin: 0, end: 300).animate(controller)
       ..addListener(() {
         setState(() {});
@@ -83,14 +81,14 @@ class _MovingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    particles.forEach((p) {
+    for (var p in particles) {
       p.validateAndUpdate(rgn, size);
-    });
+    }
 
-    particles.forEach((p) {
+    for (var p in particles) {
       final paint = Paint()..color = p.color;
       canvas.drawCircle(p.position, p.radius, paint);
-    });
+    }
   }
 
   @override
