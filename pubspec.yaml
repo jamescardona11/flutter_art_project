@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   fast_noise: ^2.0.0
   collection: ^1.18.0
+  animations: ^2.0.11
 
 
 dev_dependencies:

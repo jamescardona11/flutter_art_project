@@ -10,6 +10,8 @@ import 'pages/particles/sphere_particles_view.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -30,21 +32,58 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  final Map<String, Widget> items = {
-    'Moving Particles': const MovingParticlesView(),
-    'Cloud Particles': const CloudParticlesView(),
-    'Sphere Particles': const SphereParticlesView(),
-    'Cone Effect': const ConeEffectView(),
-    'Plasma Effect': const PlasmaEffectView(),
-  };
+  final List<(String, Widget)> items = [
+    ('Moving Particles', const MovingParticlesView()),
+    ('Cloud Particles', const CloudParticlesView()),
+    ('Sphere Particles', const SphereParticlesView()),
+    ('Cone Effect', const ConeEffectView()),
+    ('Plasma Effect', const PlasmaEffectView()),
+  ];
 
-  String _currentPage = 'Effect Section';
+  int _currentPage = 0;
+  final PageController _pageController = PageController(initialPage: 0);
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Art Project'),
+        title: Text(items[_currentPage].$1),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (_currentPage > 0) {
+                _pageController.jumpToPage(
+                  _currentPage - 1,
+                );
+              } else {
+                _pageController.jumpToPage(
+                  items.length - 1,
+                );
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.arrow_forward),
+            onPressed: () {
+              if (_currentPage < items.length - 1) {
+                _pageController.jumpToPage(
+                  _currentPage + 1,
+                );
+              } else {
+                _pageController.jumpToPage(
+                  0,
+                );
+              }
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -62,14 +101,14 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ),
               ),
             ),
-            ...items.entries.mapIndexed((index, item) {
+            ...items.mapIndexed((index, item) {
               return ListTile(
                 leading: Icon(getRandomIcon(index)),
-                title: Text(item.key),
+                title: Text(item.$1),
                 onTap: () {
-                  setState(() {
-                    _currentPage = item.key;
-                  });
+                  _pageController.jumpToPage(
+                    index,
+                  );
                   Navigator.pop(context);
                 },
               );
@@ -78,15 +117,36 @@ class _HomeWidgetState extends State<HomeWidget> {
         ),
       ),
       body: SafeArea(
-        child: FutureBuilder(
-          future: Future.delayed(const Duration(milliseconds: 500)),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return items[_currentPage] ?? const SizedBox();
+        child: PageView.builder(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: items.length,
+          onPageChanged: (index) {
+            setState(() {
+              _currentPage = index;
+            });
+          },
+          itemBuilder: (context, index) {
+            return FutureBuilder(
+              future: Future.delayed(const Duration(milliseconds: 300)),
+              builder: (context, snapshot) {
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                  child: snapshot.connectionState != ConnectionState.done
+                      ? const Center(
+                          key: ValueKey('loader'),
+                          child: CircularProgressIndicator(),
+                        )
+                      : items[index].$2,
+                );
+              },
+            );
           },
         ),
       ),
