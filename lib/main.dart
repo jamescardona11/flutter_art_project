@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_art_project/pages/effect/cone_effect_view.dart';
 
@@ -30,11 +31,11 @@ class HomeWidget extends StatefulWidget {
 
 class _HomeWidgetState extends State<HomeWidget> {
   final Map<String, Widget> items = {
+    'Moving Particles': const MovingParticlesView(),
+    'Cloud Particles': const CloudParticlesView(),
+    'Sphere Particles': const SphereParticlesView(),
     'Cone Effect': const ConeEffectView(),
     'Plasma Effect': const PlasmaEffectView(),
-    'Cloud Particles': const CloudParticlesView(),
-    'Moving Particles': const MovingParticlesView(),
-    'Sphere Particles': const SphereParticlesView(),
   };
 
   String _currentPage = 'Effect Section';
@@ -43,7 +44,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My art project'),
+        title: const Text('Flutter Art Project'),
       ),
       drawer: Drawer(
         child: ListView(
@@ -61,9 +62,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ),
               ),
             ),
-            for (var item in items.entries)
-              ListTile(
-                leading: const Icon(Icons.palette),
+            ...items.entries.mapIndexed((index, item) {
+              return ListTile(
+                leading: Icon(getRandomIcon(index)),
                 title: Text(item.key),
                 onTap: () {
                   setState(() {
@@ -71,13 +72,59 @@ class _HomeWidgetState extends State<HomeWidget> {
                   });
                   Navigator.pop(context);
                 },
-              ),
+              );
+            }),
           ],
         ),
       ),
       body: SafeArea(
-        child: items[_currentPage] ?? const SizedBox(),
+        child: FutureBuilder(
+          future: Future.delayed(const Duration(milliseconds: 500)),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return items[_currentPage] ?? const SizedBox();
+          },
+        ),
       ),
     );
+  }
+
+  IconData getRandomIcon(int index) {
+    final List<IconData> icons = [
+      Icons.star,
+      Icons.favorite,
+      Icons.palette,
+      Icons.brush,
+      Icons.color_lens,
+      Icons.auto_awesome,
+      Icons.bubble_chart,
+      Icons.blur_on,
+      Icons.gesture,
+      Icons.grain,
+      Icons.circle,
+      Icons.circle_outlined,
+      Icons.lens,
+      Icons.lens_blur,
+      Icons.blur_circular,
+      Icons.blur_linear,
+      Icons.waves,
+      Icons.water_drop,
+      Icons.light_mode,
+      Icons.brightness_7,
+      Icons.flare,
+      Icons.filter_drama,
+      Icons.filter_vintage,
+      Icons.scatter_plot,
+      Icons.motion_photos_on,
+      Icons.animation,
+      Icons.auto_fix_high,
+      Icons.diamond
+    ];
+
+    return icons[index % icons.length];
   }
 }
