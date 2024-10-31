@@ -17,6 +17,8 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
+  final PageController _pageController = PageController(initialPage: 0);
+
   final List<(String, Widget)> items = [
     ('Moving Particles', const MovingParticlesView()),
     ('Cloud Particles', const CloudParticlesView()),
@@ -26,7 +28,33 @@ class _HomeWidgetState extends State<HomeWidget> {
   ];
 
   int _currentPage = 0;
-  final PageController _pageController = PageController(initialPage: 0);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _AppBar(
+        title: items[_currentPage].$1,
+        onBackPressed: () => _onArrowPressed(false),
+        onForwardPressed: () => _onArrowPressed(true),
+      ),
+      drawer: _Drawer(
+        items: items,
+        onListTilePressed: _onListTilePressed,
+        currentPage: _currentPage,
+      ),
+      body: SafeArea(
+        child: PageView.builder(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: items.length,
+          onPageChanged: _onPageChanged,
+          itemBuilder: (context, index) {
+            return _PageViewWidget(items: items, index: index);
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -34,83 +62,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(items[_currentPage].$1),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => _onArrowPressed(false),
-          ),
-          IconButton(
-            icon: const Icon(Icons.arrow_forward),
-            onPressed: () => _onArrowPressed(true),
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Art Project Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ...items.mapIndexed((index, item) {
-              return ListTile(
-                leading: Icon(getRandomIcon(index)),
-                title: Text(item.$1),
-                onTap: () => _onListTilePressed(index),
-              );
-            }),
-          ],
-        ),
-      ),
-      body: SafeArea(
-        child: PageView.builder(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: items.length,
-          onPageChanged: (index) {
-            setState(() {
-              _currentPage = index;
-            });
-          },
-          itemBuilder: (context, index) {
-            return FutureBuilder(
-              future: Future.delayed(const Duration(milliseconds: 300)),
-              builder: (context, snapshot) {
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                  child: snapshot.connectionState != ConnectionState.done
-                      ? const Center(
-                          key: ValueKey('loader'),
-                          child: CircularProgressIndicator(),
-                        )
-                      : items[index].$2,
-                );
-              },
-            );
-          },
-        ),
-      ),
-    );
+  void _onPageChanged(index) {
+    setState(() {
+      _currentPage = index;
+    });
   }
 
   void _onListTilePressed(int index) {
@@ -118,20 +73,127 @@ class _HomeWidgetState extends State<HomeWidget> {
     Navigator.pop(context);
   }
 
+  // Circular navigation
   void _onArrowPressed(bool isNext) {
-    late int targetPage;
-    if (isNext) {
-      targetPage = 0;
-      if (_currentPage < items.length - 1) {
-        targetPage = _currentPage + 1;
-      }
-    } else {
-      targetPage = items.length - 1;
-      if (_currentPage > 0) {
-        targetPage = _currentPage - 1;
-      }
-    }
+    final targetPage = isNext ? (_currentPage + 1) % items.length : (_currentPage - 1 + items.length) % items.length;
     _pageController.jumpToPage(targetPage);
+  }
+}
+
+class _PageViewWidget extends StatelessWidget {
+  const _PageViewWidget({
+    required this.items,
+    required this.index,
+  });
+
+  final List<(String, Widget)> items;
+  final int index;
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: Future.delayed(const Duration(milliseconds: 300)),
+      builder: (context, snapshot) {
+        final (_, child) = items[index];
+
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          child: snapshot.connectionState != ConnectionState.done
+              ? const Center(
+                  key: ValueKey('loader'),
+                  child: CircularProgressIndicator(),
+                )
+              : child,
+        );
+      },
+    );
+  }
+}
+
+class _AppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _AppBar({
+    required this.title,
+    required this.onBackPressed,
+    required this.onForwardPressed,
+  });
+
+  final String title;
+  final VoidCallback onBackPressed;
+  final VoidCallback onForwardPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(title),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: onBackPressed,
+        ),
+        IconButton(
+          icon: const Icon(Icons.arrow_forward),
+          onPressed: onForwardPressed,
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class _Drawer extends StatelessWidget {
+  const _Drawer({
+    required this.items,
+    required this.onListTilePressed,
+    required this.currentPage,
+  });
+
+  final List<(String, Widget)> items;
+  final ValueChanged<int> onListTilePressed;
+  final int currentPage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text(
+              'Art Project Menu',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          ...items.mapIndexed((index, item) {
+            final (title, _) = item;
+            return ListTile(
+              leading: Icon(getRandomIcon(index)),
+              title: Text(title),
+              trailing: index == currentPage
+                  ? const Icon(
+                      Icons.circle,
+                      size: 10,
+                      color: Colors.blue,
+                    )
+                  : null,
+              onTap: () => onListTilePressed(index),
+            );
+          }),
+        ],
+      ),
+    );
   }
 
   IconData getRandomIcon(int index) {
@@ -146,8 +208,6 @@ class _HomeWidgetState extends State<HomeWidget> {
       Icons.blur_on,
       Icons.gesture,
       Icons.grain,
-      Icons.circle,
-      Icons.circle_outlined,
       Icons.lens,
       Icons.lens_blur,
       Icons.blur_circular,
