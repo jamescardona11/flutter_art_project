@@ -34,12 +34,13 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Scaffold(
       appBar: _AppBar(
         title: items[_currentPage].$1,
-        onBackPressed: () => _onArrowPressed(false),
-        onForwardPressed: () => _onArrowPressed(true),
+        currentPage: _currentPage,
+        pageController: _pageController,
+        itemsLength: items.length,
       ),
       drawer: _Drawer(
         items: items,
-        onListTilePressed: _onListTilePressed,
+        pageController: _pageController,
         currentPage: _currentPage,
       ),
       body: SafeArea(
@@ -66,17 +67,6 @@ class _HomeWidgetState extends State<HomeWidget> {
     setState(() {
       _currentPage = index;
     });
-  }
-
-  void _onListTilePressed(int index) {
-    _pageController.jumpToPage(index);
-    Navigator.pop(context);
-  }
-
-  // Circular navigation
-  void _onArrowPressed(bool isNext) {
-    final targetPage = isNext ? (_currentPage + 1) % items.length : (_currentPage - 1 + items.length) % items.length;
-    _pageController.jumpToPage(targetPage);
   }
 }
 
@@ -118,13 +108,15 @@ class _PageViewWidget extends StatelessWidget {
 class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   const _AppBar({
     required this.title,
-    required this.onBackPressed,
-    required this.onForwardPressed,
+    required this.currentPage,
+    required this.pageController,
+    required this.itemsLength,
   });
 
   final String title;
-  final VoidCallback onBackPressed;
-  final VoidCallback onForwardPressed;
+  final int currentPage;
+  final int itemsLength;
+  final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
@@ -133,11 +125,11 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: onBackPressed,
+          onPressed: () => _onArrowPressed(false),
         ),
         IconButton(
           icon: const Icon(Icons.arrow_forward),
-          onPressed: onForwardPressed,
+          onPressed: () => _onArrowPressed(true),
         ),
       ],
     );
@@ -145,17 +137,23 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  // Circular navigation
+  void _onArrowPressed(bool isNext) {
+    final targetPage = isNext ? (currentPage + 1) % itemsLength : (currentPage - 1 + itemsLength) % itemsLength;
+    pageController.jumpToPage(targetPage);
+  }
 }
 
 class _Drawer extends StatelessWidget {
   const _Drawer({
     required this.items,
-    required this.onListTilePressed,
+    required this.pageController,
     required this.currentPage,
   });
 
   final List<(String, Widget)> items;
-  final ValueChanged<int> onListTilePressed;
+  final PageController pageController;
   final int currentPage;
 
   @override
@@ -188,12 +186,17 @@ class _Drawer extends StatelessWidget {
                       color: Colors.blue,
                     )
                   : null,
-              onTap: () => onListTilePressed(index),
+              onTap: () => _onListTilePressed(context, index),
             );
           }),
         ],
       ),
     );
+  }
+
+  void _onListTilePressed(BuildContext context, int index) {
+    pageController.jumpToPage(index);
+    Navigator.pop(context);
   }
 
   IconData getRandomIcon(int index) {
