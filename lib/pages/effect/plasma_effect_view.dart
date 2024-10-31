@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:fast_noise/fast_noise.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_art_project/model/particle.dart';
 
@@ -11,8 +10,7 @@ class PlasmaEffectView extends StatefulWidget {
   PlasmaEffectViewState createState() => PlasmaEffectViewState();
 }
 
-class PlasmaEffectViewState extends State<PlasmaEffectView>
-    with SingleTickerProviderStateMixin {
+class PlasmaEffectViewState extends State<PlasmaEffectView> with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
 
@@ -22,8 +20,7 @@ class PlasmaEffectViewState extends State<PlasmaEffectView>
   void initState() {
     super.initState();
 
-    controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 5));
+    controller = AnimationController(vsync: this, duration: const Duration(seconds: 5));
     animation = Tween<double>(begin: 0, end: 300).animate(controller)
       ..addListener(() {
         if (particles.length == 0) {
@@ -47,8 +44,7 @@ class PlasmaEffectViewState extends State<PlasmaEffectView>
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _PlasmaPainter(
-          particles, animation.value, MediaQuery.of(context).size),
+      painter: _PlasmaPainter(particles, animation.value, MediaQuery.of(context).size),
       child: Container(),
     );
   }
