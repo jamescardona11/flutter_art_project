@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
-import 'utils/settings_iw.dart';
-import 'utils/settings_provider.dart';
+import 'provider/settings_iw.dart';
+import 'provider/settings_provider.dart';
 
 void main() => runApp(MyApp());
 

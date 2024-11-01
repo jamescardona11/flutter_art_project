@@ -6,7 +6,7 @@ import 'pages/effect/plasma_effect_view.dart';
 import 'pages/particles/cloud_particles_view.dart';
 import 'pages/particles/moving_particles_view.dart';
 import 'pages/particles/sphere_particles_view.dart';
-import 'utils/settings_widget.dart';
+import 'provider/settings_widget.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({
