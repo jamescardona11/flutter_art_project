@@ -1,12 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_art_project/pages/effect/cone_effect_view.dart';
 
-import 'pages/effect/plasma_effect_view.dart';
-import 'pages/particles/cloud_particles_view.dart';
-import 'pages/particles/moving_particles_view.dart';
-import 'pages/particles/sphere_particles_view.dart';
-import 'provider/art_provider.dart';
+import 'art_provider.dart';
 import 'provider/settings_widget.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -19,23 +14,16 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  final List<(String, Widget)> artPages = [
-    ('Moving Particles', const MovingParticlesView()),
-    ('Cloud Particles', const CloudParticlesView()),
-    ('Sphere Particles', const SphereParticlesView()),
-    ('Cone Effect', const ConeEffectView()),
-    ('Plasma Effect', const PlasmaEffectView()),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final provider = ArtProvider();
     return Scaffold(
-      appBar: _AppBar(artPages: artPages),
-      drawer: _Drawer(artPages: artPages),
+      appBar: _AppBar(),
+      drawer: _Drawer(),
       body: Stack(
         children: [
-          _PageViewWidget(items: artPages),
-          if (ArtProvider.instance.showControllerSettings)
+          _PageViewWidget(),
+          if (provider.showControllerSettings)
             const Positioned(
               bottom: 0,
               right: 0,
@@ -49,11 +37,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 }
 
 class _PageViewWidget extends StatefulWidget {
-  const _PageViewWidget({
-    required this.items,
-  });
-
-  final List<(String, Widget)> items;
+  const _PageViewWidget();
 
   @override
   State<_PageViewWidget> createState() => _PageViewWidgetState();
@@ -62,16 +46,17 @@ class _PageViewWidget extends StatefulWidget {
 class _PageViewWidgetState extends State<_PageViewWidget> {
   @override
   Widget build(BuildContext context) {
+    final provider = ArtProvider();
     return PageView.builder(
-        controller: ArtProvider.instance.pageController,
+        controller: provider.pageController,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: widget.items.length,
-        onPageChanged: (index) => ArtProvider.instance.setCurrentPage(index),
+        itemCount: provider.length,
+        onPageChanged: (index) => provider.setCurrentPage(index),
         itemBuilder: (context, index) {
           return FutureBuilder(
             future: Future.delayed(const Duration(milliseconds: 300)),
             builder: (context, snapshot) {
-              final (_, child) = widget.items[index];
+              final (_, child) = provider.getItem(index);
 
               return AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
@@ -95,24 +80,22 @@ class _PageViewWidgetState extends State<_PageViewWidget> {
 }
 
 class _AppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _AppBar({
-    required this.artPages,
-  });
-
-  final List<(String, Widget)> artPages;
+  const _AppBar();
 
   @override
   Widget build(BuildContext context) {
+    final provider = ArtProvider();
     return AnimatedBuilder(
-      animation: ArtProvider.instance,
+      animation: provider,
       builder: (context, child) {
-        final currentPage = ArtProvider.instance.currentPage;
+        final (title, _) = provider.getItem();
+
         return AppBar(
-          title: Text(artPages[currentPage].$1),
+          title: Text(title),
           actions: [
             IconButton(
               icon: const Icon(Icons.settings),
-              onPressed: ArtProvider.instance.setShowControllerSettings,
+              onPressed: provider.setShowControllerSettings,
             ),
             IconButton(
               icon: const Icon(Icons.arrow_back),
@@ -133,24 +116,23 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
 
   // Circular navigation
   void onArrowPressed(bool isNext) {
-    final currentPage = ArtProvider.instance.currentPage;
-    final itemsLength = artPages.length;
+    final provider = ArtProvider();
+    final currentPage = provider.currentPage;
+    final itemsLength = provider.length;
+
     final targetPage = isNext ? (currentPage + 1) % itemsLength : (currentPage - 1 + itemsLength) % itemsLength;
-    ArtProvider.instance.pageController.jumpToPage(targetPage);
+    provider.pageController.jumpToPage(targetPage);
   }
 }
 
 class _Drawer extends StatelessWidget {
-  const _Drawer({
-    required this.artPages,
-  });
-
-  final List<(String, Widget)> artPages;
+  const _Drawer();
 
   @override
   Widget build(BuildContext context) {
+    final provider = ArtProvider();
     return AnimatedBuilder(
-      animation: ArtProvider.instance,
+      animation: provider,
       builder: (context, child) => Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -167,12 +149,12 @@ class _Drawer extends StatelessWidget {
                 ),
               ),
             ),
-            ...artPages.mapIndexed((index, item) {
+            ...provider.items.mapIndexed((index, item) {
               final (title, _) = item;
               return ListTile(
                 leading: Icon(getRandomIcon(index)),
                 title: Text(title),
-                trailing: index == ArtProvider.instance.currentPage
+                trailing: index == provider.currentPage
                     ? const Icon(
                         Icons.circle,
                         size: 10,
@@ -189,8 +171,7 @@ class _Drawer extends StatelessWidget {
   }
 
   void onListTilePressed(BuildContext context, int index) {
-    final provider = ArtProvider.instance;
-    provider.setCurrentPage(index);
+    ArtProvider().setCurrentPage(index);
     Navigator.pop(context);
   }
 
