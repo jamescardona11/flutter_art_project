@@ -23,13 +23,19 @@ class _HomeWidgetState extends State<HomeWidget> {
       body: Stack(
         children: [
           _PageViewWidget(),
-          if (provider.showControllerSettings)
-            const Positioned(
-              bottom: 0,
-              right: 0,
-              left: 0,
-              child: SettingsWidget(),
-            ),
+          AnimatedBuilder(
+            animation: provider,
+            builder: (context, child) {
+              final item = provider.getItem();
+              if (!provider.showControllerSettings || !item.hasSettingsView) return const SizedBox.shrink();
+              return const Positioned(
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: SettingsWidget(),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -56,7 +62,7 @@ class _PageViewWidgetState extends State<_PageViewWidget> {
           return FutureBuilder(
             future: Future.delayed(const Duration(milliseconds: 300)),
             builder: (context, snapshot) {
-              final (_, child) = provider.getItem(index);
+              final item = provider.getItem(index);
 
               return AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
@@ -71,7 +77,7 @@ class _PageViewWidgetState extends State<_PageViewWidget> {
                         key: ValueKey('loader'),
                         child: CircularProgressIndicator(),
                       )
-                    : child,
+                    : item.view,
               );
             },
           );
@@ -88,15 +94,16 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
     return AnimatedBuilder(
       animation: provider,
       builder: (context, child) {
-        final (title, _) = provider.getItem();
+        final item = provider.getItem();
 
         return AppBar(
-          title: Text(title),
+          title: Text(item.title),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: provider.setShowControllerSettings,
-            ),
+            if (item.hasSettingsView)
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: provider.setShowControllerSettings,
+              ),
             IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => onArrowPressed(false),
@@ -150,10 +157,9 @@ class _Drawer extends StatelessWidget {
               ),
             ),
             ...provider.items.mapIndexed((index, item) {
-              final (title, _) = item;
               return ListTile(
                 leading: Icon(getRandomIcon(index)),
-                title: Text(title),
+                title: Text(item.title),
                 trailing: index == provider.currentPage
                     ? const Icon(
                         Icons.circle,

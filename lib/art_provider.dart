@@ -21,6 +21,7 @@ class ArtProvider extends ChangeNotifier {
 
   void setCurrentPage(int value) {
     _currentPage = value;
+    _showControllerSettings = false;
     notifyListeners();
   }
 
@@ -37,15 +38,44 @@ class ArtProvider extends ChangeNotifier {
 
   bool get showControllerSettings => _showControllerSettings;
 
-  List<(String, Widget)> get items => _items;
+  List<ArtPageItems> get items => _items;
 
-  (String, Widget) getItem([int? index]) => _items[index ?? _currentPage];
+  ArtPageItems getItem([int? index]) => _items[index ?? _currentPage];
 
-  final List<(String, Widget)> _items = [
-    ('Moving Particles', const MovingParticlesView()),
-    ('Cloud Particles', const CloudParticlesView()),
-    ('Sphere Particles', const SphereParticlesView()),
-    ('Cone Effect', const ConeEffectView()),
-    ('Plasma Effect', const PlasmaEffectView()),
+  final List<ArtPageItems> _items = [
+    ArtPageItems(
+      title: 'Moving Particles',
+      view: const MovingParticlesView(),
+    ),
+    ArtPageItems(
+      title: 'Cloud Particles',
+      view: const CloudParticlesView(),
+    ),
+    ArtPageItems(
+      title: 'Sphere Particles',
+      view: const SphereParticlesView(),
+    ),
+    ArtPageItems(
+      title: 'Cone Effect',
+      view: const ConeEffectView(),
+    ),
+    ArtPageItems(
+      title: 'Plasma Effect',
+      view: const PlasmaEffectView(),
+    ),
   ];
+}
+
+class ArtPageItems {
+  final String title;
+  final Widget view;
+  final Widget? settingsView;
+
+  ArtPageItems({
+    required this.title,
+    required this.view,
+    this.settingsView,
+  });
+
+  bool get hasSettingsView => settingsView != null;
 }
