@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'home_page.dart';
+import 'utils/settings_iw.dart';
+import 'utils/settings_provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,32 +11,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Material App',
       debugShowCheckedModeBanner: false,
-      home: ControllerProvider(
-        controller: null,
-        child: HomeWidget(),
+      home: SettingsInheritedWidget(
+        provider: SettingsProvider(),
+        child: const HomeWidget(),
       ),
     );
-  }
-}
-
-class ControllerProvider extends InheritedWidget {
-  final AnimationController? controller;
-
-  const ControllerProvider({
-    super.key,
-    this.controller,
-    required super.child,
-  });
-
-  static ControllerProvider? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<ControllerProvider>();
-  }
-
-  @override
-  bool updateShouldNotify(ControllerProvider oldWidget) {
-    return controller != oldWidget.controller;
   }
 }
