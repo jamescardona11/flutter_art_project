@@ -22,6 +22,7 @@ class ArtProvider extends ChangeNotifier {
   void setCurrentPage(int value) {
     _currentPage = value;
     _showControllerSettings = false;
+    _pageController.jumpToPage(value);
     notifyListeners();
   }
 

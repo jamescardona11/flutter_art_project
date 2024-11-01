@@ -4,16 +4,11 @@ import 'package:flutter/material.dart';
 import 'art_provider.dart';
 import 'provider/settings_widget.dart';
 
-class HomeWidget extends StatefulWidget {
+class HomeWidget extends StatelessWidget {
   const HomeWidget({
     super.key,
   });
 
-  @override
-  State<HomeWidget> createState() => _HomeWidgetState();
-}
-
-class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     final provider = ArtProvider();
