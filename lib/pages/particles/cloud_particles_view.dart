@@ -15,17 +15,22 @@ class CloudParticlesView extends StatefulWidget {
 }
 
 class _CloudParticlesViewState extends State<CloudParticlesView> with SingleTickerProviderStateMixin {
-  late Animation<double> animation;
   late AnimationController controller;
-  final RgnModel rgn = RgnModel();
 
+  late Animation<double> animation;
+  final RgnModel rgn = RgnModel();
   List<Particle> particles = [];
 
   @override
   void initState() {
     super.initState();
 
-    controller = AnimationController(vsync: this, duration: const Duration(seconds: 5));
+    // final provider = SettingsInheritedWidget.of(context);
+    final duration = const Duration(seconds: 2);
+
+    controller = AnimationController(vsync: this, duration: duration);
+    // provider.setController(controller, duration: duration);
+
     animation = Tween<double>(begin: 0, end: 300).animate(controller)
       ..addListener(() {
         if (particles.isEmpty) {
@@ -65,9 +70,9 @@ class _CloudParticlesViewState extends State<CloudParticlesView> with SingleTick
     final center = Offset(size.width / 2, size.height / 2);
 
     //* Number of blobs
-    final nb = 4;
+    final nb = 6;
 
-    final radius = size.width / nb;
+    final radius = size.height / nb;
     final alpha = 0.2;
 
     blobField(radius, nb, alpha, center);
@@ -99,6 +104,7 @@ class _CloudParticlesViewState extends State<CloudParticlesView> with SingleTick
   double t = 0.0;
   final dt = 0.01;
   double radiusFactor = 5;
+
   void updateBlobField() {
     t += dt;
     radiusFactor = mapRange(sin(t), -1, 1, 2, 10);
