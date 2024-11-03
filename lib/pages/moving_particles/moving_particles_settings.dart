@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_art_project/utils/input_value.dart';
 
-import 'moving_particles_page.dart';
+import 'moving_particles_view.dart';
 
 class MovingParticlesSettings extends StatelessWidget {
   const MovingParticlesSettings({

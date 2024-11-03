@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../pages/cloud_particles/cloud_particles_view.dart';
 import '../pages/cone_effect/cone_effect_view.dart';
-import '../pages/moving_particles/moving_particles_page.dart';
+import '../pages/moving_particles/moving_particles_view.dart';
 import '../pages/plasma_effect/plasma_effect_view.dart';
 import '../pages/sphere_particles/sphere_particles_view.dart';
 
@@ -46,7 +46,7 @@ class ArtProvider extends ChangeNotifier {
   final List<ArtPageItems> _items = [
     ArtPageItems(
       title: 'Moving Particles',
-      view: const MovingParticlesPage(),
+      view: const MovingParticlesView(),
       hasSettingsView: true,
     ),
     ArtPageItems(

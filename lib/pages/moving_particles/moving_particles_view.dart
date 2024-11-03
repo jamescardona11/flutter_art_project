@@ -7,18 +7,18 @@ import 'package:flutter_art_project/utils/settings_listener_widget.dart';
 
 import 'moving_particles_settings.dart';
 
-class MovingParticlesPage extends StatefulWidget {
-  const MovingParticlesPage({
+class MovingParticlesView extends StatefulWidget {
+  const MovingParticlesView({
     super.key,
   });
 
   @override
-  State<MovingParticlesPage> createState() => _MovingParticlesPageState();
+  State<MovingParticlesView> createState() => _MovingParticlesViewState();
 }
 
 typedef MovingParticlesState = (int, double, double);
 
-class _MovingParticlesPageState extends State<MovingParticlesPage> with SingleTickerProviderStateMixin {
+class _MovingParticlesViewState extends State<MovingParticlesView> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   final RgnModel rgn = RgnModel();
 

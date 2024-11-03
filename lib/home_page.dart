@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
               width: 2,
             ),
           ),
-          child: _PageViewWidget(),
+          child: _PageViewWidget(size: Size(width, height)),
         ),
       ),
     );
@@ -39,7 +39,9 @@ class HomePage extends StatelessWidget {
 }
 
 class _PageViewWidget extends StatefulWidget {
-  const _PageViewWidget();
+  const _PageViewWidget({required this.size});
+
+  final Size size;
 
   @override
   State<_PageViewWidget> createState() => _PageViewWidgetState();
@@ -67,7 +69,12 @@ class _PageViewWidgetState extends State<_PageViewWidget> {
           final item = provider.getItem(index);
 
           if (kIsWeb) {
-            return item.view;
+            return MediaQuery(
+              data: MediaQueryData(
+                size: widget.size,
+              ),
+              child: item.view,
+            );
           }
 
           return FutureBuilder(
