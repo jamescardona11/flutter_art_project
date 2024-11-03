@@ -11,7 +11,7 @@ class SphereParticlesView extends StatefulWidget {
   });
 
   @override
-  _SphereParticlesViewState createState() => _SphereParticlesViewState();
+  State<SphereParticlesView> createState() => _SphereParticlesViewState();
 }
 
 class _SphereParticlesViewState extends State<SphereParticlesView> with SingleTickerProviderStateMixin {

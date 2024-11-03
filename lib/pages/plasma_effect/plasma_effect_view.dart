@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_art_project/model/particle.dart';
 
 class PlasmaEffectView extends StatefulWidget {
-  const PlasmaEffectView({Key? key}) : super(key: key);
+  const PlasmaEffectView({super.key});
 
   @override
   PlasmaEffectViewState createState() => PlasmaEffectViewState();
@@ -23,7 +23,7 @@ class PlasmaEffectViewState extends State<PlasmaEffectView> with SingleTickerPro
     controller = AnimationController(vsync: this, duration: const Duration(seconds: 5));
     animation = Tween<double>(begin: 0, end: 300).animate(controller)
       ..addListener(() {
-        if (particles.length == 0) {
+        if (particles.isEmpty) {
           createBlobField();
         } else {
           setState(() {
@@ -85,9 +85,9 @@ class PlasmaEffectViewState extends State<PlasmaEffectView> with SingleTickerPro
 
   double t = 0;
   void updateBlobField() {
-    particles.forEach((p) {
+    for (var p in particles) {
       setParticle(p);
-    });
+    }
   }
 
   final da = 0.01;
@@ -107,14 +107,14 @@ class _PlasmaPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    particles.forEach((p) {
+    for (var p in particles) {
       final paint = Paint()
         ..style = PaintingStyle.fill
         ..strokeWidth = 5
         ..color = p.color;
 
       canvas.drawCircle(p.position, p.radius, paint);
-    });
+    }
   }
 
   @override

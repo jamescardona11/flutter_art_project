@@ -4,14 +4,13 @@ import 'package:flutter_art_project/model/particle.dart';
 import 'package:flutter_art_project/model/rgn_model.dart';
 
 class ConeEffectView extends StatefulWidget {
-  const ConeEffectView({Key? key}) : super(key: key);
+  const ConeEffectView({super.key});
 
   @override
-  ConeEffectViewState createState() => ConeEffectViewState();
+  State<ConeEffectView> createState() => ConeEffectViewState();
 }
 
-class ConeEffectViewState extends State<ConeEffectView>
-    with SingleTickerProviderStateMixin {
+class ConeEffectViewState extends State<ConeEffectView> with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
   final rgn = RgnModel();
@@ -22,11 +21,10 @@ class ConeEffectViewState extends State<ConeEffectView>
   void initState() {
     super.initState();
 
-    controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 5));
+    controller = AnimationController(vsync: this, duration: const Duration(seconds: 5));
     animation = Tween<double>(begin: 0, end: 300).animate(controller)
       ..addListener(() {
-        if (particles.length == 0) {
+        if (particles.isEmpty) {
           createBlobField();
         } else {
           setState(() {
@@ -85,9 +83,9 @@ class ConeEffectViewState extends State<ConeEffectView>
 
   double t = 0;
   void updateBlobField() {
-    particles.forEach((p) {
+    for (var p in particles) {
       setParticle(p);
-    });
+    }
 
     t += 0.01;
   }
@@ -110,8 +108,7 @@ class ConeEffectViewState extends State<ConeEffectView>
     p.position = Offset(px, py);
   }
 
-  double mapRange(
-      double value, double min1, double max1, double min2, double max2) {
+  double mapRange(double value, double min1, double max1, double min2, double max2) {
     final range1 = min1 - max1;
     final range2 = min2 - max2;
     return min2 + range2 * value / range1;
@@ -139,7 +136,7 @@ class ConePainter extends CustomPainter {
     final dx2 = canvasSize.width / 2 + w / 2;
     final dy2 = canvasSize.height / 2 - w / 2;
 
-    particles.forEach((p) {
+    for (var p in particles) {
       final paint = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 5 //remove thsi for floating example
@@ -152,7 +149,7 @@ class ConePainter extends CustomPainter {
       final p2 = p.origin + Offset(dx2, dy2);
       canvas.drawLine(p1, p.position + offset, paint);
       canvas.drawLine(p2, p.position + offset, paint);
-    });
+    }
   }
 
   @override
