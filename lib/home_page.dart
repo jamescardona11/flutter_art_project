@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'art_provider.dart';
-import 'provider/settings_widget.dart';
 
 class HomeWidget extends StatelessWidget {
   const HomeWidget({
@@ -11,26 +10,12 @@ class HomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = ArtProvider();
     return Scaffold(
       appBar: _AppBar(),
       drawer: _Drawer(),
       body: Stack(
         children: [
           _PageViewWidget(),
-          AnimatedBuilder(
-            animation: provider,
-            builder: (context, child) {
-              final item = provider.getItem();
-              if (!provider.showControllerSettings || !item.hasSettingsView) return const SizedBox.shrink();
-              return const Positioned(
-                bottom: 0,
-                right: 0,
-                left: 0,
-                child: SettingsWidget(),
-              );
-            },
-          ),
         ],
       ),
     );
@@ -94,11 +79,11 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
         return AppBar(
           title: Text(item.title),
           actions: [
-            if (item.hasSettingsView)
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: provider.setShowControllerSettings,
-              ),
+            // if (item.hasSettingsView)
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: provider.setShowControllerSettings,
+            ),
             IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => onArrowPressed(false),

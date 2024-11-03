@@ -21,17 +21,17 @@ class Particle {
     this.alpha = 0,
   }) : origin = position;
 
-  void validateAndUpdate(RgnModel rgn, Size size) {
+  void validateAndUpdate(RgnModel rgn, Size size, double value) {
     final velocity = polarToCartesian(speed, theta);
     double dx = position.dx + velocity.dx;
     double dy = position.dy + velocity.dy;
 
     if (position.dx < 0 || position.dx > size.width) {
-      dx = rgn.getDouble(size.width);
+      dx = rgn.getDouble(size.width * value);
     }
 
     if (position.dy < 0 || position.dy > size.height) {
-      dy = rgn.getDouble(size.height);
+      dy = rgn.getDouble(size.height * value);
     }
 
     position = Offset(dx, dy);
