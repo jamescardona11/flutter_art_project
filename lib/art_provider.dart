@@ -47,7 +47,7 @@ class ArtProvider extends ChangeNotifier {
     ArtPageItems(
       title: 'Moving Particles',
       view: const MovingParticlesPage(),
-      // settingsView: MovingParticlesSettings(controller: ),
+      hasSettingsView: true,
     ),
     ArtPageItems(
       title: 'Cloud Particles',
@@ -71,13 +71,11 @@ class ArtProvider extends ChangeNotifier {
 class ArtPageItems {
   final String title;
   final Widget view;
-  final Widget? settingsView;
+  final bool hasSettingsView;
 
   ArtPageItems({
     required this.title,
     required this.view,
-    this.settingsView,
+    this.hasSettingsView = false,
   });
-
-  bool get hasSettingsView => settingsView != null;
 }

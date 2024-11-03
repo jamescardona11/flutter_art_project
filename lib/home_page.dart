@@ -102,11 +102,11 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
         return AppBar(
           title: Text(item.title),
           actions: [
-            // if (item.hasSettingsView)
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: provider.setShowControllerSettings,
-            ),
+            if (item.hasSettingsView)
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: provider.setShowControllerSettings,
+              ),
             IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => onArrowPressed(false),

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_art_project/art_provider.dart';
 import 'package:flutter_art_project/model/particle.dart';
 import 'package:flutter_art_project/model/rgn_model.dart';
 
@@ -52,10 +53,22 @@ class _MovingParticlesPageState extends State<MovingParticlesPage> with SingleTi
             ),
           ),
         ),
-        MovingParticlesSettings(
-          controller: controller,
-          painterState: painterState,
-          setPainterState: setPainterState,
+        AnimatedBuilder(
+          animation: ArtProvider(),
+          builder: (context, child) {
+            final item = ArtProvider().getItem();
+            final showSettings = ArtProvider().showControllerSettings;
+
+            if (item.hasSettingsView && showSettings) {
+              return MovingParticlesSettings(
+                controller: controller,
+                painterState: painterState,
+                setPainterState: setPainterState,
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
         ),
       ],
     );
