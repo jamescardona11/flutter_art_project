@@ -15,16 +15,15 @@ class MovingParticlesPage extends StatefulWidget {
   State<MovingParticlesPage> createState() => _MovingParticlesPageState();
 }
 
+typedef MovingParticlesState = (int, double, double);
+
 class _MovingParticlesPageState extends State<MovingParticlesPage> with SingleTickerProviderStateMixin {
   late AnimationController controller;
-  bool automatic = true;
   final RgnModel rgn = RgnModel();
 
+  // (total, maxRadius, maxSpeed)
+  MovingParticlesState painterState = (100, 6, 0.5);
   List<Particle> particles = [];
-  int total = 100;
-  double maxRadius = 6;
-  double maxSpeed = 0.5;
-  double maxTheta = 2 * pi;
 
   @override
   void initState() {
@@ -33,17 +32,9 @@ class _MovingParticlesPageState extends State<MovingParticlesPage> with SingleTi
     controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 100),
-    )..addStatusListener((status) {
-        if (automatic) {
-          if (status == AnimationStatus.completed) {
-            controller.repeat();
-          } else if (status == AnimationStatus.dismissed) {
-            controller.forward();
-          }
-        }
-      });
+    );
 
-    controller.forward();
+    controller.repeat();
 
     initParticles();
   }
@@ -56,23 +47,23 @@ class _MovingParticlesPageState extends State<MovingParticlesPage> with SingleTi
           child: AnimatedBuilder(
             animation: controller,
             builder: (context, child) => CustomPaint(
-              painter: _MovingPainter(particles, rgn, controller.value),
+              painter: _MovingPainter(particles, rgn),
               child: Container(),
             ),
           ),
         ),
-        MovingParticlesSettings(controller: controller, automatic: automatic, setAutomatic: setAutomatic),
+        MovingParticlesSettings(
+          controller: controller,
+          painterState: painterState,
+          setPainterState: setPainterState,
+        ),
       ],
     );
   }
 
-  void setAutomatic(bool value) {
-    automatic = value;
-    if (automatic) {
-      controller.forward();
-    } else {
-      controller.stop();
-    }
+  void setPainterState((int, double, double) value) {
+    painterState = value;
+    initParticles();
 
     setState(() {});
   }
@@ -85,28 +76,27 @@ class _MovingParticlesPageState extends State<MovingParticlesPage> with SingleTi
 
   void initParticles() {
     particles = List.generate(
-      total,
+      painterState.$1,
       (index) => Particle(
         color: rgn.getRandomColor(),
-        speed: rgn.getDouble(maxSpeed),
-        theta: rgn.getDouble(maxTheta),
-        radius: rgn.getDouble(maxRadius),
+        theta: rgn.getDouble(2 * pi),
+        radius: rgn.getDouble(painterState.$2),
+        speed: rgn.getDouble(painterState.$3),
       ),
     );
   }
 }
 
 class _MovingPainter extends CustomPainter {
-  _MovingPainter(this.particles, this.rgn, this.value);
+  _MovingPainter(this.particles, this.rgn);
 
   final List<Particle> particles;
   final RgnModel rgn;
-  final double value;
 
   @override
   void paint(Canvas canvas, Size size) {
     for (var p in particles) {
-      p.validateAndUpdate(rgn, size, value);
+      p.validateAndUpdate(rgn, size);
     }
 
     for (var p in particles) {

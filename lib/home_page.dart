@@ -1,22 +1,37 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'art_provider.dart';
 
-class HomeWidget extends StatelessWidget {
-  const HomeWidget({
+class HomePage extends StatelessWidget {
+  const HomePage({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final width = size.width * 0.6;
+    final height = size.height * 0.8;
+
     return Scaffold(
       appBar: _AppBar(),
       drawer: _Drawer(),
-      body: Stack(
-        children: [
-          _PageViewWidget(),
-        ],
+      body: Center(
+        child: Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.black,
+              width: 2,
+            ),
+          ),
+          child: _PageViewWidget(),
+        ),
       ),
     );
   }
@@ -30,6 +45,14 @@ class _PageViewWidget extends StatefulWidget {
 }
 
 class _PageViewWidgetState extends State<_PageViewWidget> {
+  Completer<void> completer = Completer<void>();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 500)).then(completer.complete);
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = ArtProvider();
@@ -40,7 +63,7 @@ class _PageViewWidgetState extends State<_PageViewWidget> {
         onPageChanged: (index) => provider.setCurrentPage(index),
         itemBuilder: (context, index) {
           return FutureBuilder(
-            future: Future.delayed(const Duration(milliseconds: 300)),
+            future: completer.future,
             builder: (context, snapshot) {
               final item = provider.getItem(index);
 
