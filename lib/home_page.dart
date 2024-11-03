@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'art_provider.dart';
@@ -45,12 +46,13 @@ class _PageViewWidget extends StatefulWidget {
 }
 
 class _PageViewWidgetState extends State<_PageViewWidget> {
-  Completer<void> completer = Completer<void>();
+  final Completer<void> completer = Completer<void>();
+  final duration = const Duration(milliseconds: 500);
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 500)).then(completer.complete);
+    Future.delayed(duration).then(completer.complete);
   }
 
   @override
@@ -62,11 +64,15 @@ class _PageViewWidgetState extends State<_PageViewWidget> {
         itemCount: provider.length,
         onPageChanged: (index) => provider.setCurrentPage(index),
         itemBuilder: (context, index) {
+          final item = provider.getItem(index);
+
+          if (kIsWeb) {
+            return item.view;
+          }
+
           return FutureBuilder(
             future: completer.future,
             builder: (context, snapshot) {
-              final item = provider.getItem(index);
-
               return AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 transitionBuilder: (Widget child, Animation<double> animation) {
