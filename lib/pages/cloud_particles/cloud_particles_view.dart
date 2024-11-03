@@ -66,11 +66,11 @@ class _CloudParticlesViewState extends State<CloudParticlesView> with SingleTick
   }
 
   void createBlobField() {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
     final center = Offset(size.width / 2, size.height / 2);
 
     //* Number of blobs
-    final nb = 6;
+    final nb = 4;
 
     final radius = size.height / nb;
     final alpha = 0.2;

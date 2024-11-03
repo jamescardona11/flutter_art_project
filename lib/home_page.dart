@@ -25,6 +25,7 @@ class HomePage extends StatelessWidget {
           width: width,
           height: height,
           decoration: BoxDecoration(
+            color: Colors.black87,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: Colors.black,

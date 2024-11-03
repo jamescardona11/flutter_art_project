@@ -15,7 +15,6 @@ class SphereParticlesView extends StatefulWidget {
 }
 
 class _SphereParticlesViewState extends State<SphereParticlesView> with SingleTickerProviderStateMixin {
-  late Animation<double> animation;
   late AnimationController controller;
   final RgnModel rgn = RgnModel();
 
@@ -25,25 +24,17 @@ class _SphereParticlesViewState extends State<SphereParticlesView> with SingleTi
   void initState() {
     super.initState();
 
-    controller = AnimationController(vsync: this, duration: const Duration(seconds: 5));
-    animation = Tween<double>(begin: 0, end: 300).animate(controller)
+    controller = AnimationController(vsync: this, duration: const Duration(seconds: 5))
       ..addListener(() {
+        createBlobField();
         if (particles.isEmpty) {
-          createBlobField();
         } else {
           setState(() {
             updateBlobField();
           });
         }
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          controller.repeat();
-        } else if (status == AnimationStatus.dismissed) {
-          controller.forward();
-        }
       });
-    controller.forward();
+    controller.repeat();
   }
 
   @override
@@ -54,19 +45,13 @@ class _SphereParticlesViewState extends State<SphereParticlesView> with SingleTi
     );
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
   int particlesCount = 50;
   late Size size;
   late Offset origin;
   late double radius;
 
   void createBlobField() {
-    size = MediaQuery.of(context).size;
+    size = MediaQuery.sizeOf(context);
     origin = Offset(size.width / 2, size.height / 2);
 
     //* Number of blobs
@@ -107,6 +92,12 @@ class _SphereParticlesViewState extends State<SphereParticlesView> with SingleTi
   Offset getRandomPosition(double radius) {
     final t = rgn.getDouble(2 * pi);
     return polarToCartesian(radius, t);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }
 
