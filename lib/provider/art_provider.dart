@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'pages/effect/cone_effect_view.dart';
-import 'pages/effect/plasma_effect_view.dart';
-import 'pages/moving_particles/moving_particles_page.dart';
-import 'pages/particles/cloud_particles_view.dart';
-import 'pages/particles/sphere_particles_view.dart';
+import '../pages/cloud_particles/cloud_particles_view.dart';
+import '../pages/cone_effect/cone_effect_view.dart';
+import '../pages/moving_particles/moving_particles_page.dart';
+import '../pages/plasma_effect/plasma_effect_view.dart';
+import '../pages/sphere_particles/sphere_particles_view.dart';
 
 class ArtProvider extends ChangeNotifier {
   ArtProvider._();

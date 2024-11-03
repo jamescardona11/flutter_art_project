@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_art_project/art_provider.dart';
+import 'package:flutter_art_project/provider/art_provider.dart';
 
 class SettingsListenerWidget extends StatelessWidget {
   const SettingsListenerWidget({
